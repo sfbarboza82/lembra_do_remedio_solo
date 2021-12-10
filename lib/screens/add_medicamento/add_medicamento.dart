@@ -46,7 +46,7 @@ class _AddMedicamentoState extends State<AddMedicamento> {
   ];
 
   //objeto comprimido
-  int semanas = 1;
+  int diasRecorrentes = 1;
   String selectWeight;
   DateTime setDate = DateTime.now();
   final TextEditingController nomeController = TextEditingController();
@@ -116,7 +116,7 @@ class _AddMedicamentoState extends State<AddMedicamento> {
                 child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: FormFields(
-                        semanas,
+                        diasRecorrentes,
                         selectWeight,
                         popUpMenuItemChanged,
                         sliderChanged,
@@ -248,7 +248,7 @@ class _AddMedicamentoState extends State<AddMedicamento> {
 
   //slider changer
   void sliderChanged(double value) =>
-      setState(() => this.semanas = value.round());
+      setState(() => this.diasRecorrentes = value.round());
 
   //choose popum menu item
   void popUpMenuItemChanged(String value) =>
@@ -298,7 +298,7 @@ class _AddMedicamentoState extends State<AddMedicamento> {
 
   //salvar comprimido database
   Future salvar() async {
-    //check if medicine time is lower than actual time
+    //verifica se a hora é inferior a atual
     if (setDate.millisecondsSinceEpoch <=
         DateTime.now().millisecondsSinceEpoch) {
       snackbar.showSnack(
@@ -307,7 +307,7 @@ class _AddMedicamentoState extends State<AddMedicamento> {
       //criar objeto comprimido
       Comprimido comprimido = Comprimido(
           quantidade: quantidadeController.text,
-          semanas: semanas,
+          diasRecorrentes: diasRecorrentes,
           formMedicamento: tiposMedicamento[tiposMedicamento.indexWhere((element) => element.selecionado == true)].nome,
           nome: nomeController.text,
           tempo: setDate.millisecondsSinceEpoch,
@@ -315,7 +315,7 @@ class _AddMedicamentoState extends State<AddMedicamento> {
           idNotificacao: Random().nextInt(10000000));
 
       //salvar varios medicamentos e verificacoes
-      for (int i = 0; i < semanas; i++) {
+      for (int i = 0; i < diasRecorrentes; i++) {
         dynamic result =
             await _repository.insertData("Comprimidos", comprimido.comprimidoToMap());
         if (result == null) {
@@ -328,7 +328,7 @@ class _AddMedicamentoState extends State<AddMedicamento> {
           await _notificacoes.showNotification(comprimido.nome, comprimido.quantidade + " " + comprimido.formMedicamento + " " + comprimido.tipo, tempo,
               comprimido.idNotificacao,
               flutterLocalNotificationsPlugin);
-          setDate = setDate.add(Duration(milliseconds: 604800000));
+          setDate = setDate.add(Duration(milliseconds: 86400000));
           comprimido.tempo = setDate.millisecondsSinceEpoch;
           comprimido.idNotificacao = Random().nextInt(10000000);
         }

@@ -3,14 +3,14 @@ class Comprimido {
   String nome;
   String quantidade;
   String tipo;
-  int semanas;
+  int diasRecorrentes;
   String formMedicamento;
   int tempo;
   int idNotificacao;
 
   Comprimido(
       {this.id,
-      this.semanas,
+      this.diasRecorrentes,
       this.tempo,
       this.quantidade,
       this.formMedicamento,
@@ -26,7 +26,7 @@ class Comprimido {
     map['nome'] = this.nome;
     map['quantidade'] = this.quantidade;
     map['tipo'] = this.tipo;
-    map['semanas'] = this.semanas;
+    map['diasRecorrentes'] = this.diasRecorrentes;
     map['formMedicamento'] = this.formMedicamento;
     map['tempo'] = this.tempo;
     map['idNotificacao'] = this.idNotificacao;
@@ -40,7 +40,7 @@ class Comprimido {
         nome: comprimidoMap['nome'],
         quantidade: comprimidoMap['quantidade'],
         tipo: comprimidoMap['tipo'],
-        semanas: comprimidoMap['semanas'],
+        diasRecorrentes: comprimidoMap['diasRecorrentes'],
         formMedicamento: comprimidoMap['formMedicamento'],
         tempo: comprimidoMap['tempo'],
         idNotificacao: comprimidoMap['idNotificacao']);

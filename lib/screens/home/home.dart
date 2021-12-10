@@ -20,18 +20,15 @@ class _HomeState extends State<Home> {
   //flutter notificacoes
   final Notificacoes _notificacoes = Notificacoes();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-  //===============================================================
 
   //lista de comprimidos database
   List<Comprimido> listaTodosComprimidos = List<Comprimido>();
   final Repository _repository = Repository();
   List<Comprimido> comprimidosDiarios = List<Comprimido>();
-  //=========================================================================
 
   //calendario dias
   final CalendarioDiaModel _dias = CalendarioDiaModel();
   List<CalendarioDiaModel> _listaDias;
-  //====================================================
 
   //handle escolha do ultimo dia index calendario
   int _ultimoDia = 0;

@@ -4,12 +4,12 @@ import 'package:lembra_do_remedio/screens/add_medicamento/slider.dart';
 
 class FormFields extends StatelessWidget {
   final List<String> weightValues = ["comp", "ml", "mg"];
-  final int semanas;
+  final int diasRecorrentes;
   final String selectWeight;
   final Function onPopUpMenuChanged, onSliderChanged;
   final TextEditingController nameController;
   final TextEditingController amountController;
-  FormFields(this.semanas,this.selectWeight,this.onPopUpMenuChanged,this.onSliderChanged,this.nameController,this.amountController);
+  FormFields(this.diasRecorrentes,this.selectWeight,this.onPopUpMenuChanged,this.onSliderChanged,this.nameController,this.amountController);
 
   @override
   Widget build(BuildContext context) {
@@ -117,11 +117,11 @@ class FormFields extends StatelessWidget {
           ),
           Container(
             height: constrains.maxHeight * 0.18,
-            child: UserSlider(this.onSliderChanged,this.semanas)
+            child: UserSlider(this.onSliderChanged,this.diasRecorrentes)
           ),
           Align(
             alignment: Alignment.bottomRight,
-            child: FittedBox(child: Text('$semanas semana')),
+            child: FittedBox(child: Text('$diasRecorrentes dias')),
           )
         ],
       ),
