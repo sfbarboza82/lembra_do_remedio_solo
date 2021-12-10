@@ -302,7 +302,7 @@ class _AddMedicamentoState extends State<AddMedicamento> {
     if (setDate.millisecondsSinceEpoch <=
         DateTime.now().millisecondsSinceEpoch) {
       snackbar.showSnack(
-          "Verifique a data e a hora do seu remédio", _scaffoldKey, null);
+          "Verifique os dados", _scaffoldKey, null);
     } else {
       //criar objeto comprimido
       Comprimido comprimido = Comprimido(
