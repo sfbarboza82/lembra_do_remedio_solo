@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:lembra_do_remedio/database/repository.dart';
-import 'package:lembra_do_remedio/models/comprimido.dart';
+import 'package:lembra_do_remedio/models/medicamento.dart';
 import 'package:lembra_do_remedio/notifications/notificacoes.dart';
 
 class CardMedicamento extends StatelessWidget {
-
-  final Comprimido medicamento;
+  final Medicamento medicamento;
   final Function setData;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-  CardMedicamento(this.medicamento,this.setData,this.flutterLocalNotificationsPlugin);
+  CardMedicamento(
+      this.medicamento, this.setData, this.flutterLocalNotificationsPlugin);
 
   @override
   Widget build(BuildContext context) {
     //verifica se o tempo do medicamento esta abaixo do atual
-    final bool isEnd = DateTime.now().millisecondsSinceEpoch > medicamento.tempo;
+    final bool isEnd =
+        DateTime.now().millisecondsSinceEpoch > medicamento.tempo;
 
     return Card(
         elevation: 0.0,
@@ -24,8 +25,8 @@ class CardMedicamento extends StatelessWidget {
         child: ListTile(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            onLongPress: () =>
-                _showDeleteDialog(context, medicamento.nome, medicamento.id, medicamento.idNotificacao),
+            onLongPress: () => _showDeleteDialog(context, medicamento.nome,
+                medicamento.id, medicamento.idNotificacao),
             contentPadding:
                 EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
             title: Text(
@@ -69,22 +70,21 @@ class CardMedicamento extends StatelessWidget {
                     colorFilter: ColorFilter.mode(
                         isEnd ? Colors.white : Colors.transparent,
                         BlendMode.saturation),
-                    child: Image.asset(
-                      medicamento.image
-                    )),
+                    child: Image.asset(medicamento.image)),
               ),
             )));
   }
 
-
   //mostrar dialogo de delete
 
-  void _showDeleteDialog(BuildContext context, String nomeMedicamento, int idMedicamento, int idNotificacao) {
+  void _showDeleteDialog(BuildContext context, String nomeMedicamento,
+      int idMedicamento, int idNotificacao) {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
               title: Text("Apagar ?"),
-              content: Text("Você tem certeza que deseja apagar o $nomeMedicamento remédio?"),
+              content: Text(
+                  "Você tem certeza que deseja apagar o $nomeMedicamento remédio?"),
               contentTextStyle:
                   TextStyle(fontSize: 17.0, color: Colors.grey[800]),
               actions: [
@@ -103,8 +103,9 @@ class CardMedicamento extends StatelessWidget {
                   child: Text("Apagar",
                       style: TextStyle(color: Theme.of(context).primaryColor)),
                   onPressed: () async {
-                    await Repository().deleteData('Comprimidos', idMedicamento);
-                    await Notificacoes().removeNotify(idNotificacao, flutterLocalNotificationsPlugin);
+                    await Repository().deleteData('Medicamentos', idMedicamento);
+                    await Notificacoes().removeNotify(
+                        idNotificacao, flutterLocalNotificationsPlugin);
                     setData();
                     Navigator.pop(context);
                   },
@@ -112,5 +113,4 @@ class CardMedicamento extends StatelessWidget {
               ],
             ));
   }
-
 }

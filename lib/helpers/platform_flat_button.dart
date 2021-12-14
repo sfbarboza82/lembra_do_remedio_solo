@@ -7,7 +7,10 @@ class PlatformFlatButton extends StatelessWidget {
   final Widget buttonChild;
   final Color color;
 
-  PlatformFlatButton({@required this.buttonChild,@required this.color,@required this.handler});
+  PlatformFlatButton(
+      {@required this.buttonChild,
+      @required this.color,
+      @required this.handler});
 
   @override
   Widget build(BuildContext context) {

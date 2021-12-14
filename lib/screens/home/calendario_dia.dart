@@ -15,16 +15,16 @@ class _CalendarioDiaState extends State<CalendarioDia> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context,constrains) => Column(
+      builder: (context, constrains) => Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             widget.dia.diario,
             style: TextStyle(
-                color: Colors.grey[500],
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-                ),
+              color: Colors.grey[500],
+              fontSize: 22.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(
             height: constrains.maxHeight * 0.1,
@@ -41,7 +41,8 @@ class _CalendarioDiaState extends State<CalendarioDia> {
                 child: Text(
                   widget.dia.numeroDia.toString(),
                   style: TextStyle(
-                      color: widget.dia.confirmado ? Colors.white : Colors.black,
+                      color:
+                          widget.dia.confirmado ? Colors.white : Colors.black,
                       fontSize: 22.0,
                       fontWeight: FontWeight.bold),
                 ),

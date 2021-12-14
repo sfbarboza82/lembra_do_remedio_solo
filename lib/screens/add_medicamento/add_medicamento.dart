@@ -6,7 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:lembra_do_remedio/database/repository.dart';
 import 'package:lembra_do_remedio/helpers/snack_bar.dart';
-import 'package:lembra_do_remedio/models/comprimido.dart';
+import 'package:lembra_do_remedio/models/medicamento.dart';
 import 'package:lembra_do_remedio/models/tipo_medicamento.dart';
 import 'package:lembra_do_remedio/notifications/notificacoes.dart';
 import '../../helpers/platform_flat_button.dart';
@@ -32,7 +32,8 @@ class _AddMedicamentoState extends State<AddMedicamento> {
 
   //lista de medicamentos objeto
   final List<TipoMedicamento> tiposMedicamento = [
-    TipoMedicamento("Xarope", Image.asset("assets/images/xarope.png"), true),
+    TipoMedicamento(
+        "Xarope", Image.asset("assets/images/xarope.png"), true),
     TipoMedicamento(
         "Comprimidos", Image.asset("assets/images/comprimidos.png"), false),
     TipoMedicamento(
@@ -45,7 +46,7 @@ class _AddMedicamentoState extends State<AddMedicamento> {
         "Seringa", Image.asset("assets/images/seringa.png"), false),
   ];
 
-  //objeto comprimido
+  //objeto medicamento
   int diasRecorrentes = 1;
   String selectWeight;
   DateTime setDate = DateTime.now();
@@ -147,8 +148,8 @@ class _AddMedicamentoState extends State<AddMedicamento> {
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
-                    ...tiposMedicamento.map(
-                        (tipo) => CardTipoMedicamento(tipo, cliqueTipoMedicamento))
+                    ...tiposMedicamento.map((tipo) =>
+                        CardTipoMedicamento(tipo, cliqueTipoMedicamento))
                   ],
                 ),
               ),
@@ -259,9 +260,7 @@ class _AddMedicamentoState extends State<AddMedicamento> {
 
   Future<void> openTimePicker() async {
     await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.now(),
-            helpText: "Horário")
+            context: context, initialTime: TimeOfDay.now(), helpText: "Horário")
         .then((value) {
       DateTime newDate = DateTime(
           setDate.year,
@@ -296,19 +295,20 @@ class _AddMedicamentoState extends State<AddMedicamento> {
     });
   }
 
-  //salvar comprimido database
+  //salvar medicamento database
   Future salvar() async {
     //verifica se a hora é inferior a atual
     if (setDate.millisecondsSinceEpoch <=
         DateTime.now().millisecondsSinceEpoch) {
-      snackbar.showSnack(
-          "Verifique os dados", _scaffoldKey, null);
+      snackbar.showSnack("Verifique os dados", _scaffoldKey, null);
     } else {
-      //criar objeto comprimido
-      Comprimido comprimido = Comprimido(
+      //criar objeto medicamento
+      Medicamento medicamento = Medicamento(
           quantidade: quantidadeController.text,
           diasRecorrentes: diasRecorrentes,
-          formMedicamento: tiposMedicamento[tiposMedicamento.indexWhere((element) => element.selecionado == true)].nome,
+          formMedicamento: tiposMedicamento[tiposMedicamento
+                  .indexWhere((element) => element.selecionado == true)]
+              .nome,
           nome: nomeController.text,
           tempo: setDate.millisecondsSinceEpoch,
           tipo: selectWeight,
@@ -317,20 +317,27 @@ class _AddMedicamentoState extends State<AddMedicamento> {
       //salvar varios medicamentos e verificacoes
       for (int i = 0; i < diasRecorrentes; i++) {
         dynamic result =
-            await _repository.insertData("Comprimidos", comprimido.comprimidoToMap());
+            await _repository.insertData("Medicamentos", medicamento.toMap());
         if (result == null) {
           snackbar.showSnack("Algo está errado", _scaffoldKey, null);
           return;
         } else {
-          //set notificacao schneudele
+          //set notificacao
           tz.initializeTimeZones();
           tz.setLocalLocation(tz.getLocation('America/Sao_Paulo'));
-          await _notificacoes.showNotification(comprimido.nome, comprimido.quantidade + " " + comprimido.formMedicamento + " " + comprimido.tipo, tempo,
-              comprimido.idNotificacao,
+          await _notificacoes.showNotification(
+              medicamento.nome,
+              medicamento.quantidade +
+                  " " +
+                  medicamento.formMedicamento +
+                  " " +
+                  medicamento.tipo,
+              tempo,
+              medicamento.idNotificacao,
               flutterLocalNotificationsPlugin);
           setDate = setDate.add(Duration(milliseconds: 86400000));
-          comprimido.tempo = setDate.millisecondsSinceEpoch;
-          comprimido.idNotificacao = Random().nextInt(10000000);
+          medicamento.tempo = setDate.millisecondsSinceEpoch;
+          medicamento.idNotificacao = Random().nextInt(10000000);
         }
       }
 
@@ -342,8 +349,10 @@ class _AddMedicamentoState extends State<AddMedicamento> {
   //clique form medicamento
   void cliqueTipoMedicamento(TipoMedicamento medicamento) {
     setState(() {
-      tiposMedicamento.forEach((tipoMedicamento) => tipoMedicamento.selecionado = false);
-      tiposMedicamento[tiposMedicamento.indexOf(medicamento)].selecionado = true;
+      tiposMedicamento
+          .forEach((tipoMedicamento) => tipoMedicamento.selecionado = false);
+      tiposMedicamento[tiposMedicamento.indexOf(medicamento)].selecionado =
+          true;
     });
   }
 

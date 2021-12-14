@@ -1,11 +1,10 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:animated_widgets/animated_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../../notifications/notificacoes.dart';
 import '../../database/repository.dart';
-import '../../models/comprimido.dart';
+import '../../models/medicamento.dart';
 import '../../screens/home/lista_medicamentos.dart';
 import '../../screens/home/calendario.dart';
 import '../../models/calendario_dia_model.dart';
@@ -16,15 +15,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   //flutter notificacoes
   final Notificacoes _notificacoes = Notificacoes();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-  //lista de comprimidos database
-  List<Comprimido> listaTodosComprimidos = List<Comprimido>();
+  //lista de medicamentos database
+  List<Medicamento> listaTodosMedicamentos = List<Medicamento>();
   final Repository _repository = Repository();
-  List<Comprimido> comprimidosDiarios = List<Comprimido>();
+  List<Medicamento> medicamentosDiarios = List<Medicamento>();
 
   //calendario dias
   final CalendarioDiaModel _dias = CalendarioDiaModel();
@@ -42,14 +40,14 @@ class _HomeState extends State<Home> {
   }
 
   //init notificacoes
-  Future initNotifies() async => flutterLocalNotificationsPlugin = await _notificacoes.initNotifies(context);
-
+  Future initNotifies() async => flutterLocalNotificationsPlugin =
+      await _notificacoes.initNotifies(context);
 
   //get todos os dados database
   Future setData() async {
-    listaTodosComprimidos.clear();
-    (await _repository.getAllData("Comprimidos")).forEach((comprimidoMap) {
-      listaTodosComprimidos.add(Comprimido().comprimidoMapToObject(comprimidoMap));
+    listaTodosMedicamentos.clear();
+    (await _repository.getAllData("Medicamentos")).forEach((Map) {
+      listaTodosMedicamentos.add(Medicamento().mapToObject(Map));
     });
     selecionarDia(_listaDias[_ultimoDia]);
   }
@@ -112,10 +110,10 @@ class _HomeState extends State<Home> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Calendario(selecionarDia,_listaDias),
+                  child: Calendario(selecionarDia, _listaDias),
                 ),
                 SizedBox(height: deviceHeight * 0.03),
-                comprimidosDiarios.isEmpty
+                medicamentosDiarios.isEmpty
                     ? SizedBox(
                         width: double.infinity,
                         height: 100,
@@ -124,14 +122,13 @@ class _HomeState extends State<Home> {
                               fontSize: 32.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.black),
-                          text: [
-                            "Sem Remédios Hoje!"
-                          ],
+                          text: ["Sem Remédios Hoje!"],
                           isRepeatingAnimation: true,
                           speed: Duration(milliseconds: 150),
                         ),
                       )
-                    : ListaMedicamentos(comprimidosDiarios,setData,flutterLocalNotificationsPlugin)
+                    : ListaMedicamentos(medicamentosDiarios, setData,
+                        flutterLocalNotificationsPlugin)
               ],
             ),
           ),
@@ -142,21 +139,25 @@ class _HomeState extends State<Home> {
 
   //clique no dia do calendario
 
-  void selecionarDia(CalendarioDiaModel diaSelecionado){
+  void selecionarDia(CalendarioDiaModel diaSelecionado) {
     setState(() {
       _ultimoDia = _listaDias.indexOf(diaSelecionado);
-      _listaDias.forEach((dia) => dia.confirmado = false );
-      CalendarioDiaModel selecionarDia = _listaDias[_listaDias.indexOf(diaSelecionado)];
+      _listaDias.forEach((dia) => dia.confirmado = false);
+      CalendarioDiaModel selecionarDia =
+          _listaDias[_listaDias.indexOf(diaSelecionado)];
       selecionarDia.confirmado = true;
-      comprimidosDiarios.clear();
-      listaTodosComprimidos.forEach((comprimido) {
-        DateTime dataComprimido = DateTime.fromMicrosecondsSinceEpoch(comprimido.tempo * 1000);
-        if(selecionarDia.numeroDia == dataComprimido.day && selecionarDia.mes == dataComprimido.month && selecionarDia.ano == dataComprimido.year){
-          comprimidosDiarios.add(comprimido);
+      medicamentosDiarios.clear();
+      listaTodosMedicamentos.forEach((medicamento) {
+        DateTime dataMedicamento =
+            DateTime.fromMicrosecondsSinceEpoch(medicamento.tempo * 1000);
+        if (selecionarDia.numeroDia == dataMedicamento.day &&
+            selecionarDia.mes == dataMedicamento.month &&
+            selecionarDia.ano == dataMedicamento.year) {
+          medicamentosDiarios.add(medicamento);
         }
       });
-      comprimidosDiarios.sort((comprimido1,comprimido2) => comprimido1.tempo.compareTo(comprimido2.tempo));
+      medicamentosDiarios.sort((medicamento1, medicamento2) =>
+          medicamento1.tempo.compareTo(medicamento2.tempo));
     });
   }
-
 }
